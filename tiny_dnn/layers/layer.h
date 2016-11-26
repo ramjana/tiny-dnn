@@ -608,6 +608,16 @@ class layer : public node {
 
     Device* device_ptr_ = nullptr;
 
+    edgeptr_t ith_in_node(serial_size_t i) {
+        if (!prev_[i]) alloc_input(i);
+        return prev()[i];
+    }
+
+    edgeptr_t ith_out_node(serial_size_t i) {
+        if (!next_[i]) alloc_output(i);
+        return next()[i];
+    }
+
  private:
     bool trainable_;
     std::shared_ptr<weight_init::function> weight_init_;
@@ -624,16 +634,6 @@ class layer : public node {
         // which type of refactoring do you have in mind for that?
         next_[i] = std::make_shared<edge>((layer*)this,
             out_shape()[i], out_type_[i]);
-    }
-
-    edgeptr_t ith_in_node(serial_size_t i) {
-        if (!prev_[i]) alloc_input(i);
-        return prev()[i];
-    }
-
-    edgeptr_t ith_out_node(serial_size_t i) {
-        if (!next_[i]) alloc_output(i);
-        return next()[i];
     }
 
     vec_t* get_weight_data(serial_size_t i) {

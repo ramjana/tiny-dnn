@@ -67,6 +67,7 @@ using namespace tiny_dnn::activation;
 
 #include "test_tensor.h"
 #include "test_image.h"
+#include "test_composite_layer.h"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

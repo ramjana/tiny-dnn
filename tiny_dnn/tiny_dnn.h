@@ -55,6 +55,8 @@
 #include "tiny_dnn/layers/batch_normalization_layer.h"
 #include "tiny_dnn/layers/slice_layer.h"
 #include "tiny_dnn/layers/power_layer.h"
+#include "tiny_dnn/layers/activation_layer.h"
+#include "tiny_dnn/layers/composite_layer.h"
 
 #include "tiny_dnn/activations/activation_function.h"
 #include "tiny_dnn/lossfunctions/loss_function.h"

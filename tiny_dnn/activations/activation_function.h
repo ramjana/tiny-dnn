@@ -171,5 +171,49 @@ public:
     std::pair<float_t, float_t> scale() const override { return std::make_pair(float_t(0.1), float_t(0.9)); }
 };
 
+// y = h(a)
+template <typename Activation>
+inline void forward_activation(tensor_t& y, const tensor_t& a, Activation& h) {
+    if (a.empty()) {
+        return;
+    }
+
+    size_t out_dim = a[0].size();
+
+    for_i(y.size(), [&](int sample) {
+        vec_t& y_vec       = y[sample];
+        const vec_t& a_vec = a[sample];
+        for (size_t i = 0; i < out_dim; i++) {
+            y_vec[i] = h.f(a_vec, i);
+        }
+    });
+}
+
+template <typename Activation>
+inline void backward_activation(const tensor_t& prev_delta,
+                                const tensor_t& this_out,
+                                tensor_t& curr_delta,
+                                Activation& h) {
+    for_i(this_out.size(), [&](size_t sample) {
+        const vec_t& out_vec = this_out[sample];
+        const vec_t& prev_delta_vec = prev_delta[sample];
+        vec_t& curr_delta_vec = curr_delta[sample];
+
+        const size_t len = prev_delta_vec.size();
+
+        if (h.one_hot()) {
+            for (size_t c = 0; c < len; c++) {
+                curr_delta_vec[c] = prev_delta_vec[c] * h.df(out_vec[c]);
+            }
+        }
+        else {
+            for (size_t c = 0; c < len; c++) {
+                vec_t df = h.df(out_vec, c);
+                curr_delta_vec[c] = vectorize::dot(&prev_delta_vec[0], &df[0], len);
+            }
+        }
+    });
+}
+
 } // namespace activation
 } // namespace tiny_dnn
