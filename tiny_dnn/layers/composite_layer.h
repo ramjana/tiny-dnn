@@ -26,6 +26,7 @@
 */
 #pragma once
 #include "tiny_dnn/util/util.h"
+#include "tiny_dnn/activations/activation_function.h"
 #include <algorithm>
 
 namespace tiny_dnn {
@@ -49,7 +50,7 @@ public:
         }
         a = *out_data[0];
 
-        tiny_dnn::forward_activation(*out_data[0], a, h_);
+        activation::forward_activation(*out_data[0], a, h_);
     }
 
     void back_propagation(const std::vector<tensor_t*>& in_data,
@@ -57,7 +58,7 @@ public:
                           std::vector<tensor_t*>&       out_grad,
                           std::vector<tensor_t*>&       in_grad) override {
  
-        tiny_dnn::backward_activation(*out_grad[0], *out_data[0], da, h_);
+        activation::backward_activation(*out_grad[0], *out_data[0], da, h_);
 
         if (da_ptr.size() < out_grad.size()) {
             grow(out_grad, &da_ptr);
